@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Trading Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <h1 id="title">Stock Trading Calculator</h1>
+            <div class="toolbar">
+                <button id="settings-button" class="icon-button" title="Settings">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+                <button id="lang-switch" class="icon-button" title="Switch Language">
+                    <i class="fas fa-language"></i> <span id="lang-text">中文</span>
+                </button>
+                <button id="theme-switch" class="icon-button" title="Switch Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="calculator-card">
+            <div class="card-header">
+                <div class="tab-container">
+                    <div class="tab active" data-tab="buy-sell">
+                        <i class="fas fa-calculator"></i> <span class="tab-text" data-lang-key="trading-calculator">Trading Calculator</span>
+                    </div>
+                    <div class="tab" data-tab="profit-goal">
+                        <i class="fas fa-bullseye"></i> <span class="tab-text" data-lang-key="profit-target">Profit Target</span>
+                    </div>
+                </div>
+                <div class="last-updated">
+                    <span data-lang-key="last-update">Last updated</span>: <span id="update-time"></span>
+                </div>
+            </div>
+
+            <div class="tab-content active" id="buy-sell">
+                <div class="main-content">
+                    <div class="input-section">
+                        <div class="form-row compact">
+                            <div class="form-group">
+                                <label for="buy-price" data-lang-key="buy-price">Buy Price</label>
+                                <div class="input-with-controls">
+                                    <button class="value-control decrease">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <div class="value-display" id="buy-price">100</div>
+                                    <button class="value-control increase">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sell-price" data-lang-key="sell-price">Sell Price</label>
+                                <div class="input-with-controls">
+                                    <button class="value-control decrease">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <div class="value-display" id="sell-price">105</div>
+                                    <button class="value-control increase">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="shares" data-lang-key="shares">Number of Shares</label>
+                                <div class="input-with-controls">
+                                    <button class="value-control decrease">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <div class="value-display" id="shares">1000</div>
+                                    <button class="value-control increase">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="price-simulation-section">
+                        <div class="table-header">
+                            <h3 data-lang-key="price-simulation">Price Simulation</h3>
+                        </div>
+                        <div class="table-container">
+                            <table id="price-simulation">
+                                <thead>
+                                    <tr>
+                                        <th data-lang-key="sell-price">Sell Price</th>
+                                        <th data-lang-key="profit">Profit</th>
+                                        <th data-lang-key="roi-table">ROI</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Generated dynamically by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-container">
+                    <div class="results-header">
+                        <h3 data-lang-key="trading-results">Trading Results</h3>
+                        <div class="actions">
+                            <button id="copy-results" class="icon-button small" title="Copy Results">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button id="export-results" class="icon-button small" title="Export Results">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="results">
+                        <div class="result-item">
+                            <span data-lang-key="buy-cost">Buy Cost</span>
+                            <span id="buy-cost">-- TWD</span>
+                        </div>
+                        <div class="result-item">
+                            <span data-lang-key="buy-fee">Buy Fee</span>
+                            <span id="buy-fee">-- TWD</span>
+                        </div>
+                        <div class="result-item">
+                            <span data-lang-key="sell-value">Sell Value</span>
+                            <span id="sell-value">-- TWD</span>
+                        </div>
+                        <div class="result-item">
+                            <span data-lang-key="sell-fee">Sell Fee</span>
+                            <span id="sell-fee">-- TWD</span>
+                        </div>
+                        <div class="result-item">
+                            <span data-lang-key="tax">Securities Transaction Tax</span>
+                            <span id="tax">-- TWD</span>
+                        </div>
+                        <div class="result-item total">
+                            <span data-lang-key="net-profit">Net Profit</span>
+                            <span id="net-profit">-- TWD</span>
+                        </div>
+                        <div class="result-item">
+                            <span data-lang-key="roi">ROI</span>
+                            <span id="roi">-- %</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="profit-goal">
+                <div class="form-row compact">
+                    <div class="form-group">
+                        <label for="current-price" data-lang-key="current-price">Current Price</label>
+                        <div class="input-with-controls">
+                            <button class="value-control decrease">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="value-display" id="current-price">100</div>
+                            <button class="value-control increase">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="target-profit" data-lang-key="target-profit">Target Profit (%)</label>
+                        <div class="input-with-controls">
+                            <button class="value-control decrease">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="value-display" id="target-profit">5</div>
+                            <button class="value-control increase">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="target-shares" data-lang-key="shares">Number of Shares</label>
+                        <div class="input-with-controls">
+                            <button class="value-control decrease">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="value-display" id="target-shares">1000</div>
+                            <button class="value-control increase">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results">
+                    <h3 data-lang-key="target-price">Target Price</h3>
+                    <div class="result-item highlight">
+                        <span data-lang-key="target-sell-price">Target Sell Price</span>
+                        <span id="target-price">-- TWD</span>
+                    </div>
+                    <div class="result-item">
+                        <span data-lang-key="estimated-profit">Estimated Profit</span>
+                        <span id="estimated-profit">-- TWD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 <span data-lang-key="footer-title">Stock Trading Calculator</span> | <span data-lang-key="footer-disclaimer">For reference only, actual trading fees may vary by broker</span></p>
+            <div class="footer-links">
+                <a href="#" id="show-instructions" data-lang-key="instructions">Instructions</a>
+                <a href="#" id="show-about" data-lang-key="about">About</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for instructions -->
+    <div class="modal" id="instructions-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-lang-key="instructions">Instructions</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <h3 data-lang-key="how-to-use">How to Use</h3>
+                <ul>
+                    <li data-lang-key="instruction-1">Enter buy price, sell price, and number of shares to calculate trading results.</li>
+                    <li data-lang-key="instruction-2">Use the tabs at the top to switch between Trading Calculator and Profit Target modes.</li>
+                    <li data-lang-key="instruction-3">Price simulation table shows potential profits at different sell prices.</li>
+                    <li data-lang-key="instruction-4">Use the +/- buttons to adjust values quickly.</li>
+                    <li data-lang-key="instruction-5">Switch between English and Chinese using the language button in the header.</li>
+                </ul>
+                
+                <h3 data-lang-key="formula">Formulas</h3>
+                <div class="formula-table">
+                    <table>
+                        <tr>
+                            <td data-lang-key="buy-cost">Buy Cost</td>
+                            <td>= Buy Price × Number of Shares</td>
+                        </tr>
+                        <tr>
+                            <td data-lang-key="buy-fee">Buy Fee</td>
+                            <td>= max(Buy Cost × 0.1425% × Discount, Minimum Fee)</td>
+                        </tr>
+                        <tr>
+                            <td data-lang-key="sell-value">Sell Value</td>
+                            <td>= Sell Price × Number of Shares</td>
+                        </tr>
+                        <tr>
+                            <td data-lang-key="sell-fee">Sell Fee</td>
+                            <td>= max(Sell Value × 0.1425% × Discount, Minimum Fee)</td>
+                        </tr>
+                        <tr>
+                            <td data-lang-key="tax">Securities Transaction Tax</td>
+                            <td>= Sell Value × Tax Rate (Stock: 0.3%, Day Trade: 0.15%, ETF: 0.1%)</td>
+                        </tr>
+                        <tr>
+                            <td data-lang-key="net-profit">Net Profit</td>
+                            <td>= Sell Value - Buy Cost - Buy Fee - Sell Fee - Tax</td>
+                        </tr>
+                        <tr>
+                            <td data-lang-key="roi">ROI</td>
+                            <td>= Net Profit ÷ (Buy Cost + Buy Fee) × 100%</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for About -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-lang-key="about">About</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p data-lang-key="about-text">This calculator is designed to help stock traders in Taiwan calculate potential profits and losses from their trades. It includes features for calculating transaction fees, taxes, and return on investment.</p>
+                <p data-lang-key="about-inspiration">Inspired by stock.epoch.tw</p>
+                <p data-lang-key="about-version">Version: 1.0.0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Settings -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-lang-key="settings">Settings</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-container">
+                    <div class="setting-item">
+                        <label data-lang-key="trade-type">Trade Type</label>
+                        <div class="select-wrapper">
+                            <select id="trade-type">
+                                <option value="stock" data-lang-key="stock">Stock</option>
+                                <option value="day-trade" data-lang-key="day-trade">Day Trade</option>
+                                <option value="etf" data-lang-key="etf">ETF</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label data-lang-key="fee-discount">Fee Discount</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="fee-discount" value="0.6" min="0" max="1" step="0.01">
+                            <span data-lang-key="discount">discount</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label data-lang-key="min-fee">Min Fee</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="min-fee" value="20" min="0" max="100">
+                            <span>TWD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
