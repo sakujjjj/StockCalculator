@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             "instruction-5": "使用頂部的語言按鈕切換英文和中文。",
             "formula": "計算公式",
             "about-text": "這個計算器專為台灣股票交易者設計，幫助計算交易的潛在盈虧。包含各種手續費、稅金和投資報酬率的計算功能。",
-            "about-inspiration": "靈感來源：stock.epoch.tw",
+            "about-design": "Design by Jack Ku",
             "about-version": "版本：1.0.0",
             "last-update": "最後更新"
         }
@@ -124,32 +124,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Value controls (increase/decrease buttons)
     document.querySelectorAll('.value-control').forEach(button => {
         button.addEventListener('click', function() {
-            const valueDisplay = this.parentElement.querySelector('.value-display');
-            const id = valueDisplay.id;
-            let value = parseInt(valueDisplay.textContent) || 0;
-            const step = id === 'shares' ? 100 : 1;
+            const input = this.parentElement.querySelector('input');
+            const step = parseFloat(input.getAttribute('step') || 1);
             
             if (this.classList.contains('increase')) {
-                value += step;
+                input.value = (parseFloat(input.value) || 0) + step;
             } else {
-                value = Math.max(0, value - step);
+                input.value = Math.max(0, (parseFloat(input.value) || 0) - step);
             }
             
-            valueDisplay.textContent = value;
-            
-            // Recalculate results
-            calculateTrade();
-            updatePriceSimulation();
+            // Trigger input event to recalculate
+            input.dispatchEvent(new Event('input'));
         });
     });
     
-    // Attach event listeners for custom options
+    // Input event listeners for auto-update
+    const buyPriceInput = document.getElementById('buy-price');
+    const sellPriceInput = document.getElementById('sell-price');
+    const sharesInput = document.getElementById('shares');
     const tradeTypeSelect = document.getElementById('trade-type');
     const feeDiscountInput = document.getElementById('fee-discount');
     const minFeeInput = document.getElementById('min-fee');
     
-    // Attach event listeners for settings
-    [tradeTypeSelect, feeDiscountInput, minFeeInput].forEach(input => {
+    // Attach event listeners to all inputs for dynamic calculation
+    [buyPriceInput, sellPriceInput, sharesInput, tradeTypeSelect, feeDiscountInput, minFeeInput].forEach(input => {
         input.addEventListener('input', function() {
             calculateTrade();
             updatePriceSimulation();
@@ -157,24 +155,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // For profit target tab
-    document.querySelectorAll('#profit-goal .value-control').forEach(button => {
-        button.addEventListener('click', function() {
-            const valueDisplay = this.parentElement.querySelector('.value-display');
-            const id = valueDisplay.id;
-            let value = parseInt(valueDisplay.textContent) || 0;
-            const step = id === 'target-shares' ? 100 : id === 'target-profit' ? 0.1 : 1;
-            
-            if (this.classList.contains('increase')) {
-                value += step;
-            } else {
-                value = Math.max(0, value - step);
-            }
-            
-            valueDisplay.textContent = value;
-            
-            // Recalculate results
-            calculateProfitTarget();
-        });
+    const currentPriceInput = document.getElementById('current-price');
+    const targetProfitInput = document.getElementById('target-profit');
+    const targetSharesInput = document.getElementById('target-shares');
+    
+    [currentPriceInput, targetProfitInput, targetSharesInput].forEach(input => {
+        input.addEventListener('input', calculateProfitTarget);
     });
     
     // Theme switching
@@ -214,10 +200,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Trading calculation function
     function calculateTrade() {
-        // Get values from display elements
-        const buyPrice = parseInt(document.getElementById('buy-price').textContent) || 0;
-        const sellPrice = parseInt(document.getElementById('sell-price').textContent) || 0;
-        const shares = parseInt(document.getElementById('shares').textContent) || 0;
+        // Get input values
+        const buyPrice = parseFloat(buyPriceInput.value) || 0;
+        const sellPrice = parseFloat(sellPriceInput.value) || 0;
+        const shares = parseInt(sharesInput.value) || 0;
         const tradeType = tradeTypeSelect.value;
         const feeDiscount = parseFloat(feeDiscountInput.value) || 0.6;
         const minFee = parseFloat(minFeeInput.value) || 20;
@@ -258,10 +244,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update price simulation table
     function updatePriceSimulation() {
-        // Get values from display elements
-        const buyPrice = parseInt(document.getElementById('buy-price').textContent) || 0;
-        const sellPrice = parseInt(document.getElementById('sell-price').textContent) || 0;
-        const shares = parseInt(document.getElementById('shares').textContent) || 0;
+        const buyPrice = parseFloat(buyPriceInput.value) || 0;
+        const sellPrice = parseFloat(sellPriceInput.value) || 0;
+        const shares = parseInt(sharesInput.value) || 0;
         const tradeType = tradeTypeSelect.value;
         const feeDiscount = parseFloat(feeDiscountInput.value) || 0.6;
         const minFee = parseFloat(minFeeInput.value) || 20;
@@ -321,9 +306,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Profit target calculation function
     function calculateProfitTarget() {
-        const currentPrice = parseInt(document.getElementById('current-price').textContent) || 0;
-        const targetProfit = parseFloat(document.getElementById('target-profit').textContent) || 0;
-        const shares = parseInt(document.getElementById('target-shares').textContent) || 0;
+        const currentPrice = parseFloat(currentPriceInput.value) || 0;
+        const targetProfit = parseFloat(targetProfitInput.value) || 0;
+        const shares = parseInt(targetSharesInput.value) || 0;
         const tradeType = tradeTypeSelect.value;
         const feeDiscount = parseFloat(feeDiscountInput.value) || 0.6;
         const minFee = parseFloat(minFeeInput.value) || 20;

@@ -298,6 +298,16 @@ input[type="number"] {
     border-radius: 0;
     background-color: var(--input-bg);
     color: var(--text-color);
+    text-align: center;
+    -moz-appearance: textfield;
+    border-left: none;
+    border-right: none;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 input[type="number"]:focus {
@@ -690,7 +700,7 @@ footer {
     border-radius: 4px;
     overflow-y: auto;
     flex-grow: 1;
-    height: 230px;
+    height: 260px;
 }
 
 /* Results Container - Positioned below */
@@ -725,4 +735,23 @@ footer {
     font-size: 16px;
     border-left: none;
     border-right: none;
+}
+
+/* 確保在各種螢幕尺寸下都能正確顯示5筆數據 */
+@media (max-height: 950px) {
+    .price-simulation-section {
+        height: auto;
+    }
+    
+    .table-container {
+        height: 260px;
+    }
+    
+    input[type="number"] {
+        padding: 8px 5px;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
 } 
